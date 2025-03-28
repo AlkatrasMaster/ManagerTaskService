@@ -16,7 +16,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/api/v1/tasks")
+@RequestMapping("/tasks")
 @RequiredArgsConstructor
 @Slf4j
 public class TaskController {
@@ -29,7 +29,7 @@ public class TaskController {
      * @return объект задачи в формате DTO
      */
     @GetMapping("/{id}")
-    public ResponseEntity <TaskDto> getTaskById(@PathVariable Long id) {
+    public ResponseEntity<TaskDto> getTaskById(@PathVariable Long id) {
         log.info("Получение задачи с ID: {}", id);
         try {
             TaskDto taskDto = taskServices.getById(id);

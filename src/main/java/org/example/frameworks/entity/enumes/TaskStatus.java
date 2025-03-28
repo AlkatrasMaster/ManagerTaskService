@@ -2,9 +2,9 @@ package org.example.frameworks.entity.enumes;
 
 public enum TaskStatus {
 
-    WAITING("В ОЖИДАНИИ"),
-    IN_PROGRESS("В ПРОЦЕССЕ"),
-    COMPLETED("ЗАВЕРШЕНО");
+    WAITING("в ожидании"),
+    IN_PROGRESS("в процессе"),
+    COMPLETED("завершено");
 
 
     private final String description;
