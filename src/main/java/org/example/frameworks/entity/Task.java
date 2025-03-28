@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.frameworks.entity.enumes.TaskStatus;
 
 import java.time.LocalDateTime;
 
@@ -44,12 +45,15 @@ public class Task {
     @Column(name = "description")
     private String description;
 
+
     /**
      * Статус выполнения задачи.
      * По умолчанию false (задача не выполнена).
      */
-    @Column(name = "completed", columnDefinition = "boolean default false")
-    private Boolean completed;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private TaskStatus status;
+
 
     /**
      * Временная метка создания задачи.
