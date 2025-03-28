@@ -1,6 +1,7 @@
 package org.example.frameworks.dto;
 
 import lombok.*;
+import org.example.frameworks.entity.enumes.TaskStatus;
 
 import java.time.LocalDateTime;
 
@@ -20,7 +21,7 @@ public class TaskDto {
     private Long id; // Уникальный идентификатор задачи
     private String title; // Заголовок задачи
     private String description; // Подробное описание задачи
-    private Boolean completed; // Флаг, указывающий на выполнение задачи
+    private String status; // Статус задачи (WAITING - в ожидании, IN_PROGRESS - в процессе, COMPLETED - завершено)
     private LocalDateTime createdAt; // Временная метка создания задачи
     private LocalDateTime updateAt; // Временная метка последнего обновления задачи
 }
