@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.frameworks.dto.TaskDto;
 import org.example.frameworks.entity.Task;
+import org.example.frameworks.entity.enumes.TaskStatus;
 import org.example.frameworks.repository.TaskRepository;
 import org.example.frameworks.services.crudes.TaskCRUDServices;
 import org.springframework.http.HttpStatus;
@@ -38,7 +39,7 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         log.info("Получение задачи с ID: {}", id);
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Задача с id %d не найдена", id)));
-        return null;
+        return mapToDto(task);
     }
 
     /**
@@ -64,7 +65,7 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         log.info("Создание новой задачи");
         Task task = mapToEntity(taskDto);
         task.setCreatedAt(LocalDateTime.now());
-        task.setCreatedAt(LocalDateTime.now());
+        task.setUpdateAt(LocalDateTime.now());
         taskRepository.save(task);
     }
 
@@ -79,11 +80,19 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         log.info("Обновление задачи {}", id);
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Задачи не найдена"));
+        //Обновление всех полей
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
-        task.setCompleted(taskDto.getCompleted());
+        // Преобразование статуса из строки в enum
+
+        try {
+            task.setStatus(TaskStatus.valueOf(taskDto.getStatus().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный статус задачи");
+        }
         task.setUpdateAt(LocalDateTime.now());
         taskRepository.save(task);
+
     }
 
     /**
@@ -111,7 +120,7 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         taskDto.setId(task.getId());
         taskDto.setTitle(task.getTitle());
         taskDto.setDescription(task.getDescription());
-        taskDto.setCompleted(task.getCompleted());
+        taskDto.setStatus(task.getStatus().name());
         taskDto.setCreatedAt(task.getCreatedAt());
         taskDto.setUpdateAt(task.getUpdateAt());
         return taskDto;
@@ -129,7 +138,9 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         task.setId(taskDto.getId());
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
-        task.setCompleted(taskDto.getCompleted());
+        if (taskDto.getStatus() != null) {
+            task.setStatus(TaskStatus.valueOf(taskDto.getStatus().toUpperCase()));
+        }
         return task;
     }
 }
