@@ -12,7 +12,15 @@
             <column name="title" type="varchar(255)">
                 <constraints nullable="false"/>
             </column>
-            <column name="description" type="text"/>
+            <column name="description" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(50)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="priority" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
             <column name="completed" type="boolean" defaultValue="false"/>
             <column name="created_at" type="timestamp without time zone">
                 <constraints nullable="false"/>

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.frameworks.dto.TaskDto;
 import org.example.frameworks.entity.Task;
+import org.example.frameworks.entity.enumes.TaskPriority;
 import org.example.frameworks.entity.enumes.TaskStatus;
 import org.example.frameworks.repository.TaskRepository;
 import org.example.frameworks.services.crudes.TaskCRUDServices;
@@ -84,11 +85,18 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
         // Преобразование статуса из строки в enum
-
+        // Обработка статуса
         try {
             task.setStatus(TaskStatus.valueOf(taskDto.getStatus().toUpperCase()));
         } catch (IllegalArgumentException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный статус задачи");
+        }
+
+        // Обработка приоритета
+        try {
+            task.setPriority(TaskPriority.valueOf(taskDto.getPriority().toUpperCase()));
+        }catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный приоритет задачи");
         }
         task.setUpdateAt(LocalDateTime.now());
         taskRepository.save(task);
@@ -120,7 +128,9 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         taskDto.setId(task.getId());
         taskDto.setTitle(task.getTitle());
         taskDto.setDescription(task.getDescription());
+        taskDto.setCompleted(task.getCompleted());
         taskDto.setStatus(task.getStatus().name());
+        taskDto.setPriority(task.getPriority().name());
         taskDto.setCreatedAt(task.getCreatedAt());
         taskDto.setUpdateAt(task.getUpdateAt());
         return taskDto;
@@ -132,14 +142,28 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
      * @param taskDto DTO для преобразования
      * @return сущность задачи
      */
-
     public static Task mapToEntity(TaskDto taskDto) {
         Task task = new Task();
         task.setId(taskDto.getId());
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
+        task.setCompleted(taskDto.getCompleted());
+
+        // Обработка статуса
         if (taskDto.getStatus() != null) {
-            task.setStatus(TaskStatus.valueOf(taskDto.getStatus().toUpperCase()));
+            try {
+                task.setStatus(TaskStatus.valueOf(taskDto.getStatus().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный статус задачи");
+            }
+        }
+        // Обработка приоритета
+        if (taskDto.getPriority() != null) {
+            try {
+                task.setPriority(TaskPriority.valueOf(taskDto.getPriority().toUpperCase()));
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Неверный приоритет задачи");
+            }
         }
         return task;
     }

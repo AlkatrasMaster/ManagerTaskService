@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.example.frameworks.entity.enumes.TaskPriority;
 import org.example.frameworks.entity.enumes.TaskStatus;
 
 import java.time.LocalDateTime;
@@ -50,9 +51,24 @@ public class Task {
      * Статус выполнения задачи.
      * По умолчанию false (задача не выполнена).
      */
+    @Column(name = "completed", columnDefinition = "boolean default false")
+    private Boolean completed;
+
+
+    /**
+     * Статус задачи (WAITING - в ожидании, I
+     * N_PROGRESS - в процессе, COMPLETED - завершено)
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private TaskStatus status;
+
+    /**
+     * Приоритет задачи (HIGH - высокий, MEDIUM - средний, LOW - низкий)
+     */
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority")
+    private TaskPriority priority;
 
 
     /**
