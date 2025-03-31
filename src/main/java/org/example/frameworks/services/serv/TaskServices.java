@@ -36,7 +36,7 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
      * @throws ResponseStatusException если задача не найдена
      */
     @Override
-    public TaskDto getById(Long id) {
+    public TaskDto getById(Integer id) {
         log.info("Получение задачи с ID: {}", id);
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Задача с id %d не найдена", id)));
@@ -77,7 +77,7 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
      * @throws ResponseStatusException если задача не найдена или данные некорректны
      */
     @Override
-    public void update(Long id, TaskDto taskDto) {
+    public void update(Integer id, TaskDto taskDto) {
         log.info("Обновление задачи {}", id);
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Задачи не найдена"));
@@ -109,7 +109,7 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
      * @throws ResponseStatusException если задача не найдена
      */
     @Override
-    public void deletedById(Long id) {
+    public void deletedById(Integer id) {
         log.info("Удаление задачи с ID: {}", id);
         if (!taskRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Задачи не найдена");
@@ -133,6 +133,12 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         taskDto.setPriority(task.getPriority().name());
         taskDto.setCreatedAt(task.getCreatedAt());
         taskDto.setUpdateAt(task.getUpdateAt());
+        taskDto.setComments(
+                task.getComments()
+                        .stream()
+                        .map(CommentServices::mapToDo)
+                        .toList()
+        );
         return taskDto;
     }
 
@@ -148,6 +154,12 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
         task.setCompleted(taskDto.getCompleted());
+        task.setComments(
+                taskDto.getComments()
+                        .stream()
+                        .map(CommentServices::mapToEntity)
+                        .toList()
+        );
 
         // Обработка статуса
         if (taskDto.getStatus() != null) {

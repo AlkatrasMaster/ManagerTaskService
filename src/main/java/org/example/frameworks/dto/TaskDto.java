@@ -5,6 +5,7 @@ import org.example.frameworks.entity.enumes.TaskPriority;
 import org.example.frameworks.entity.enumes.TaskStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -19,12 +20,13 @@ import java.time.LocalDateTime;
 @Setter
 public class TaskDto {
 
-    private Long id; // Уникальный идентификатор задачи
+    private Integer id; // Уникальный идентификатор задачи
     private String title; // Заголовок задачи
     private String description; // Подробное описание задачи
     private Boolean completed;
     private String status; // Статус задачи
     private String priority; // Приоритет задачи
+    private List<CommentDto> comments = List.of();
     private LocalDateTime createdAt; // Временная метка создания задачи
     private LocalDateTime updateAt; // Временная метка последнего обновления задачи
 }

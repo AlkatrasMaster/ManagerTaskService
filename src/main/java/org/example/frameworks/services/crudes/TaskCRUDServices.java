@@ -14,10 +14,10 @@ import java.util.List;
  */
 public interface TaskCRUDServices<T> {
 
-    T getById(Long id) throws ResponseStatusException;
+    T getById(Integer id) throws ResponseStatusException;
     List<T> getALL();
     void create(T dto);
-    void update(Long id, T dto) throws ResponseStatusException;
-    void deletedById(Long id) throws ResponseStatusException;
+    void update(Integer id, T dto) throws ResponseStatusException;
+    void deletedById(Integer id) throws ResponseStatusException;
 
 }

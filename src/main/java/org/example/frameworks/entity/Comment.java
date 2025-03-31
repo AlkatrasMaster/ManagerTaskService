@@ -24,7 +24,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     /**
      * Текст комментария.
@@ -37,8 +37,9 @@ public class Comment {
      * ID задачи, к которой относится комментарий.
      * Обеспечивает связь с сущностью Task.
      */
-    @Column(name = "task_id", nullable = false)
-    private Long taskId;
+    @ManyToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
 
     /**
      * Временная метка создания комментария.

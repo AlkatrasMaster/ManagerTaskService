@@ -15,7 +15,7 @@ public class CommentDto {
     /**
      * Уникальный идентификатор комментария.
      */
-    private Long id;
+    private Integer id;
 
     /**
      * Текст комментария.
@@ -25,7 +25,7 @@ public class CommentDto {
     /**
      * ID задачи, к которой относится комментарий.
      */
-    private Long taskId;
+    private Integer taskId;
 
     /**
      * Временная метка создания комментария.

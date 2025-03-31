@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.frameworks.dto.CommentDto;
 import org.example.frameworks.entity.Comment;
+import org.example.frameworks.entity.Task;
 import org.example.frameworks.repository.CommentRepository;
+import org.example.frameworks.repository.TaskRepository;
 import org.example.frameworks.services.crudes.CommentCRUDServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,9 +23,10 @@ public class CommentServices implements CommentCRUDServices<CommentDto> {
 
 
     private final CommentRepository commentRepository;
+    private final TaskRepository taskRepository;
 
     @Override
-    public CommentDto getById(Long id) throws ResponseStatusException {
+    public CommentDto getById(Integer id) throws ResponseStatusException {
         log.info("Получение комментария с ID: {}", id);
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -32,7 +35,7 @@ public class CommentServices implements CommentCRUDServices<CommentDto> {
     }
 
     @Override
-    public List<CommentDto> findByTaskId(Long taskId) {
+    public List<CommentDto> findByTaskId(Integer taskId) {
         log.info("Получение всех комментариев для задачи с ID: {}", taskId);
         List<Comment> comments = commentRepository.findByTaskId(taskId);
         return comments.stream()
@@ -42,16 +45,23 @@ public class CommentServices implements CommentCRUDServices<CommentDto> {
 
     @Override
     public CommentDto create(CommentDto commentDto) {
-        log.info("Создание нового комментария");
+        log.info("Создание нового комментария для задачи с ID: {}", commentDto.getTaskId());
+
+        Task task = taskRepository.findById(commentDto.getTaskId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        String.format("Задача с ID %d не найдена", commentDto.getTaskId())));
+
         Comment comment = mapToEntity(commentDto);
+        comment.setTask(task);
         comment.setCreatedAt(LocalDateTime.now());
         comment.setUpdateAt(LocalDateTime.now());
+
         Comment savedComment = commentRepository.save(comment);
         return mapToDo(savedComment);
     }
 
     @Override
-    public CommentDto update(Long id, CommentDto commentDto) {
+    public CommentDto update(Integer id, CommentDto commentDto) {
         log.info("Обновление комментария с ID: {}", id);
         Comment comment = commentRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
@@ -63,9 +73,9 @@ public class CommentServices implements CommentCRUDServices<CommentDto> {
     }
 
     @Override
-    public void deleteById(Long id) throws ResponseStatusException {
+    public void deleteById(Integer id) throws ResponseStatusException {
         log.info("Удаление комментария с ID: {}", id);
-        if (!commentRepository.existsByUd(id)) {
+        if (!commentRepository.existsById(id)) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND,
                     String.format("Комментарий с ID %d не найден", id));
         }
@@ -77,13 +87,13 @@ public class CommentServices implements CommentCRUDServices<CommentDto> {
      * @param comment сущность для преобразования
      * @return DTO объект комментария
      */
-    private static CommentDto mapToDo(Comment comment) {
+    public static CommentDto mapToDo(Comment comment) {
         CommentDto commentDto = new CommentDto();
         commentDto.setId(comment.getId());
         commentDto.setText(comment.getText());
-        commentDto.setTaskId(commentDto.getTaskId());
-        commentDto.setCreatedAt(commentDto.getCreatedAt());
-        commentDto.setUpdateAt(commentDto.getUpdateAt());
+        commentDto.setTaskId(comment.getTask().getId());
+        commentDto.setCreatedAt(comment.getCreatedAt());
+        commentDto.setUpdateAt(comment.getUpdateAt());
         return commentDto;
     }
 
@@ -93,11 +103,10 @@ public class CommentServices implements CommentCRUDServices<CommentDto> {
      * @param commentDto DTO для преобразования
      * @return сущность комментария
      */
-    private static Comment mapToEntity(CommentDto commentDto) {
+    public static Comment mapToEntity(CommentDto commentDto) {
         Comment comment = new Comment();
         comment.setId(commentDto.getId());
         comment.setText(commentDto.getText());
-        comment.setTaskId(commentDto.getTaskId());
         return comment;
     }
 }

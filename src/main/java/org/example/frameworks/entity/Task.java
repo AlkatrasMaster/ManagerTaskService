@@ -9,6 +9,7 @@ import org.example.frameworks.entity.enumes.TaskPriority;
 import org.example.frameworks.entity.enumes.TaskStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 /**
@@ -30,7 +31,7 @@ public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private Integer id;
 
     /**
      * Заголовок задачи.
@@ -84,4 +85,7 @@ public class Task {
      */
     @Column(name = "update_at", nullable = false)
     private LocalDateTime updateAt;
+
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 }

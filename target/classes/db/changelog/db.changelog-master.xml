@@ -4,7 +4,7 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    http:////www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
     
-    <changeSet id="create-task-table" author="skillbox">
+    <changeSet id="createTaskTable" author="skillbox">
         <createTable tableName="task">
             <column name="id" type="serial">
                 <constraints primaryKey="true"/>
@@ -22,6 +22,25 @@
                 <constraints nullable="true"/>
             </column>
             <column name="completed" type="boolean" defaultValue="false"/>
+            <column name="created_at" type="timestamp without time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="update_at" type="timestamp without time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="createCommentTable" author="skillbox">
+        <createTable tableName="comments">
+            <column name="id" type="serial">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="text" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="task_id" type="bigint">
+            </column>
             <column name="created_at" type="timestamp without time zone">
                 <constraints nullable="false"/>
             </column>

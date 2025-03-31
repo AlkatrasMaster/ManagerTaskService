@@ -29,7 +29,7 @@ public class TaskController {
      * @return объект задачи в формате DTO
      */
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDto> getTaskById(@PathVariable Long id) {
+    public ResponseEntity<TaskDto> getTaskById(@PathVariable Integer id) {
         log.info("Получение задачи с ID: {}", id);
         try {
             TaskDto taskDto = taskServices.getById(id);
@@ -69,7 +69,7 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<TaskDto> updateTask(@PathVariable Long id, @RequestBody TaskDto taskDto) {
+    public ResponseEntity<TaskDto> updateTask(@PathVariable Integer id, @RequestBody TaskDto taskDto) {
         log.info("Обновление задачи с ID: {}", id);
         try {
             taskServices.update(id, taskDto);
@@ -85,7 +85,7 @@ public class TaskController {
      */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTask(@PathVariable Long id) {
+    public void deleteTask(@PathVariable Integer id) {
         log.info("Удаление задачи с ID: {}", id);
         try {
             taskServices.deletedById(id);

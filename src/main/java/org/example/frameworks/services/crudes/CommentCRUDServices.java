@@ -17,14 +17,14 @@ public interface CommentCRUDServices<T>{
      * @return комментарий в формате DTO
      * @throws ResponseStatusException если комментарий не найден
      */
-    T getById(Long id) throws ResponseStatusException;
+    T getById(Integer id) throws ResponseStatusException;
 
     /**
      * Получение всех комментариев по ID задачи.
      * @param taskId ID задачи
      * @return список комментариев в формате DTO
      */
-    List<T> findByTaskId(Long taskId);
+    List<T> findByTaskId(Integer taskId);
 
     /**
      * Создание нового комментария.
@@ -40,7 +40,7 @@ public interface CommentCRUDServices<T>{
      * @return обновленный комментарий в формате DTO
      * @throws ResponseStatusException если комментарий не найден
      */
-    T update(Long id, T commentDto);
+    T update(Integer id, T commentDto);
 
 
     /**
@@ -48,6 +48,6 @@ public interface CommentCRUDServices<T>{
      * @param id ID комментария
      * @throws ResponseStatusException если комментарий не найден
      */
-    void deleteById(Long id) throws ResponseStatusException;
+    void deleteById(Integer id) throws ResponseStatusException;
 
 }
