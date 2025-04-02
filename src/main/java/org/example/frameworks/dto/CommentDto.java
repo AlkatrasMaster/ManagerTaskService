@@ -12,30 +12,12 @@ import java.time.LocalDateTime;
 @Setter
 public class CommentDto {
 
-    /**
-     * Уникальный идентификатор комментария.
-     */
-    private Integer id;
 
-    /**
-     * Текст комментария.
-     */
-    private String text;
-
-    /**
-     * ID задачи, к которой относится комментарий.
-     */
-    private Integer taskId;
-
-    /**
-     * Временная метка создания комментария.
-     */
-    private LocalDateTime createdAt;
-
-    /**
-     * Временная метка последнего обновления комментария.
-     */
-    private LocalDateTime updateAt;
+    private Integer id; // Уникальный идентификатор комментария.
+    private String text; // Текст комментария.
+    private Integer taskId; // ID задачи, к которой относится комментарий.
+    private LocalDateTime createdAt; // Временная метка создания комментария.
+    private LocalDateTime updateAt; // Временная метка последнего обновления комментария.
 
 
 }
