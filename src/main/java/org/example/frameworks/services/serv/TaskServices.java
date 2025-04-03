@@ -4,15 +4,18 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.frameworks.dto.TaskDto;
 import org.example.frameworks.entity.Task;
+import org.example.frameworks.entity.User;
 import org.example.frameworks.entity.enumes.TaskPriority;
 import org.example.frameworks.entity.enumes.TaskStatus;
 import org.example.frameworks.repository.TaskRepository;
+import org.example.frameworks.repository.UserRepository;
 import org.example.frameworks.services.crudes.TaskCRUDServices;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -28,6 +31,8 @@ import java.util.List;
 public class TaskServices implements TaskCRUDServices<TaskDto> {
 
     private final TaskRepository taskRepository;
+
+    private final UserRepository userRepository;
 
     /**
      * Получение задачи по ID
@@ -84,6 +89,22 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
         //Обновление всех полей
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
+
+        // обновление автора
+        if (taskDto.getAuthors() != null) {
+            User author = userRepository.findByUsername(taskDto.getAuthors())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            String.format("Автор с username %s не найден", taskDto.getAuthors())));
+            task.setAuthors(author);
+        }
+
+        // обновление исполнителя
+        if (taskDto.getExecutor() != null) {
+            User executor = userRepository.findByUsername(taskDto.getExecutor())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
+                            String.format("Исполнитель c username %s не найден", taskDto.getExecutor())));
+            task.setExecutor(executor);
+        }
         // Преобразование статуса из строки в enum
         // Обработка статуса
         try {
@@ -139,6 +160,16 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
                         .map(CommentServices::mapToDo)
                         .toList()
         );
+        if (task.getAuthors() != null) {
+            taskDto.setAuthors(task.getAuthors().getUsername());
+        }
+
+        if (task.getExecutor() != null) {
+            taskDto.setExecutor(task.getExecutor().getUsername());
+        }
+
+
+
         return taskDto;
     }
 
@@ -148,18 +179,35 @@ public class TaskServices implements TaskCRUDServices<TaskDto> {
      * @param taskDto DTO для преобразования
      * @return сущность задачи
      */
-    public static Task mapToEntity(TaskDto taskDto) {
+    public Task mapToEntity(TaskDto taskDto) {
         Task task = new Task();
         task.setId(taskDto.getId());
         task.setTitle(taskDto.getTitle());
         task.setDescription(taskDto.getDescription());
         task.setCompleted(taskDto.getCompleted());
+
+        if (taskDto.getAuthors() != null) {
+            User user = userRepository.findByUsername(taskDto.getAuthors())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Автор c id %d не найдена", taskDto.getAuthors())));
+            task.setAuthors(user);
+        }
+
+        if (taskDto.getExecutor() != null) {
+            User user = userRepository.findByUsername(taskDto.getExecutor())
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, String.format("Автор c id %d не найдена", taskDto.getExecutor())));
+            task.setExecutor(user);
+        }
+
+
+
+
         task.setComments(
                 taskDto.getComments()
                         .stream()
                         .map(CommentServices::mapToEntity)
                         .toList()
         );
+
 
         // Обработка статуса
         if (taskDto.getStatus() != null) {

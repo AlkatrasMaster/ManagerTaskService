@@ -71,6 +71,13 @@ public class Task {
     @Column(name = "priority")
     private TaskPriority priority;
 
+    @ManyToOne
+    @JoinColumn(name = "authors_id")
+    private User authors;
+
+    @ManyToOne
+    @JoinColumn(name = "executor_id")
+    private User executor;
 
     /**
      * Временная метка создания задачи.

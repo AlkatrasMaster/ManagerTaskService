@@ -1,6 +1,7 @@
 package org.example.frameworks.dto;
 
 import lombok.*;
+import org.example.frameworks.entity.User;
 import org.example.frameworks.entity.enumes.TaskPriority;
 import org.example.frameworks.entity.enumes.TaskStatus;
 
@@ -24,6 +25,8 @@ public class TaskDto {
     private String title; // Заголовок задачи
     private String description; // Подробное описание задачи
     private Boolean completed;
+    private String authors;
+    private String executor;
     private String status; // Статус задачи
     private String priority; // Приоритет задачи
     private List<CommentDto> comments = List.of();

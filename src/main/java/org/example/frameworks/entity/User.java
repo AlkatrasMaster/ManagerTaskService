@@ -32,31 +32,19 @@ public class User {
     @Column(name = "username", nullable = false, unique = true)
     private String username;
 
-    /**
-     * Email пользователя.
-     * Должен быть уникальным.
-     */
+    @ManyToOne
+    @JoinColumn(name = "task_id")
+    private Task task;
+
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    /**
-     * Пароль пользователя.
-     * Хранится в зашифрованном виде.
-     */
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(name = "password", nullable = false, unique = true)
     private String password;
 
-    /**
-     * Временная метка создания пользователя.
-     * Устанавливается автоматически при создании и не может быть изменена.
-     */
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    /**
-     * Временная метка последнего обновления пользователя.
-     * Устанавливается автоматически при создании и обновлении.
-     */
     @Column(name = "update_at", nullable = false)
     private LocalDateTime updatedAt;
 }
